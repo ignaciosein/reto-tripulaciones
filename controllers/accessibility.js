@@ -1,5 +1,6 @@
 const { user } = require("../utils/database");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const routes = {
   hello: (req, res) => {
@@ -35,6 +36,33 @@ const routes = {
     } catch (err) {
       console.log(err);
     }
+  },
+  login: (req, res) => {
+    const user = {
+      id: 1,
+      nombre: "Henry",
+      email: "henry@email.com",
+    };
+
+    jwt.sign({ user: user }, "secretkey", (err, token) => {
+      res.json({
+        token: token,
+      });
+    });
+  },
+  posts: (req, res) => {
+    jwt.verify(req.token, "secretkey", (error, authData) => {
+      if (error) {
+        res.sendStatus(403);
+      } else {
+        res.json({
+          mensaje: "postveriffy fue creado",
+          authData,
+        });
+      }
+    });
+
+    res.json({ mensaje: "Postssss fué creado" });
   },
 };
 
