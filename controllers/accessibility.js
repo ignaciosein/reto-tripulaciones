@@ -11,6 +11,7 @@ const routes = {
     }
   },
   createUser: async (req, res) => {
+console.log(req.body)
     const { name, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 11);
     const entry = { name: name, email: email, password: hashedPassword };
@@ -38,22 +39,46 @@ const routes = {
     }
   },
   login: (req, res) => {
+    
+   const  {username,password} = req.body
+
+   console.log(req.body)
+
+
+
     const user = {
       id: 1,
-      nombre: "Henry",
-      email: "henry@email.com",
+    email: "henry@email.com",
+      pass: "1234",
     };
 
-    jwt.sign(
-      { user: user },
-      "secretkey",
-      { expiresIn: "32s" },
-      (err, token) => {
-        res.json({
-          token: token,
-        });
-      }
-    );
+
+
+    if(username === user.email && password === user.pass){
+
+      console.log("usuario existe")
+
+
+      jwt.sign(
+        { user: user },
+        "secretkey",
+        { expiresIn: "32s" },
+        (err, token) => {
+          res.cookie(token)
+  
+          res.json({
+            token: token,
+          });
+        }
+      );
+
+    }
+    else {
+
+      console.log("el usuario no existe, se tiene que registrar")
+    }
+
+  
   },
   posts: (req, res) => {
     jwt.verify(req.token, "secretkey", (error, authData) => {

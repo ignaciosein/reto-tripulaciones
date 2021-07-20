@@ -1,4 +1,6 @@
 import "./SignIn.scss";
+import Cookies from 'universal-cookie';
+
 import axios from "axios";
 import { useState, useEffect } from "react";
 import loginService from "../../services/login";
@@ -9,10 +11,22 @@ const SignIn = () => {
 
 
 
-
+  const cookies = new Cookies();
 
   useEffect(() => {
+    
+
+    console.log(cookies.get("myCat"))
+   
  
+
+//leer las cookies
+//comprobar si hay cookies y token a que usuario peternece
+//haciendo peticion al bakc
+
+
+
+
    
   }, []);
 
@@ -22,23 +36,17 @@ const SignIn = () => {
     event.preventDefault();
 
     try {
-      const user = await loginService.login({
+    
+      const response = await loginService.login({
         username,
         password,
       });
-      setUser(user);
+      
+      setUser(response);
       setUsername("");
       setPassword("");
 
-      await axios.post("http://localhost:5000/api/login",{
-  
-        method: "POST",
-        email: username,
-        pass: password
- 
-      })
-
-
+      cookies.set('myCat',response.token)
 
     } catch (e) {
 
@@ -49,6 +57,8 @@ const SignIn = () => {
 
    
   };
+  console.log("//////////")
+  console.log("//////////")
 
   console.log(username);
   console.log(password);
