@@ -38,8 +38,6 @@ const routes = {
     }
   },
   login: (req, res) => {
- 
-
     const user = {
       id: 1,
       nombre: "Henry",
