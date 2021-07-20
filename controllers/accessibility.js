@@ -38,17 +38,24 @@ const routes = {
     }
   },
   login: (req, res) => {
+ 
+
     const user = {
       id: 1,
       nombre: "Henry",
       email: "henry@email.com",
     };
 
-    jwt.sign({ user: user }, "secretkey", (err, token) => {
-      res.json({
-        token: token,
-      });
-    });
+    jwt.sign(
+      { user: user },
+      "secretkey",
+      { expiresIn: "32s" },
+      (err, token) => {
+        res.json({
+          token: token,
+        });
+      }
+    );
   },
   posts: (req, res) => {
     jwt.verify(req.token, "secretkey", (error, authData) => {

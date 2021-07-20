@@ -1,4 +1,5 @@
 import "./SignIn.scss";
+import axios from "axios";
 import { useState, useEffect } from "react";
 import loginService from "../../services/login";
 const SignIn = () => {
@@ -6,8 +7,13 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
+
+
+
+
   useEffect(() => {
-    setUsername("hola");
+ 
+   
   }, []);
 
   console.log(username);
@@ -23,6 +29,17 @@ const SignIn = () => {
       setUser(user);
       setUsername("");
       setPassword("");
+
+      await axios.post("http://localhost:5000/api/login",{
+  
+        method: "POST",
+        email: username,
+        pass: password
+ 
+      })
+
+
+
     } catch (e) {
 
 
@@ -37,7 +54,7 @@ const SignIn = () => {
   console.log(password);
 
   return (
-    <form className="SignIn" onSubmit={handleLogin}>
+    <form   className="SignIn" onSubmit={handleLogin}>
       <label htmlFor="email">
         Email:
         <input
