@@ -17,6 +17,7 @@ const SignIn = () => {
     
 
     console.log(cookies.get("myCat"))
+    
    
  
 
@@ -30,6 +31,19 @@ const SignIn = () => {
    
   }, []);
 
+  useEffect(() => {
+
+    if(user ==null){
+
+      alert("el usuario no existe")
+    }
+   
+  }, [user])
+
+
+
+  
+
   console.log(username);
 
   const handleLogin = async (event) => {
@@ -41,12 +55,17 @@ const SignIn = () => {
         username,
         password,
       });
+
+      console.log(response)
       
       setUser(response);
       setUsername("");
       setPassword("");
 
       cookies.set('myCat',response.token)
+      alert("Se ha logueado correctamente")
+
+      window.location = "/demo"  
 
     } catch (e) {
 
@@ -57,11 +76,10 @@ const SignIn = () => {
 
    
   };
-  console.log("//////////")
-  console.log("//////////")
 
-  console.log(username);
-  console.log(password);
+
+console.log(user)
+ 
 
   return (
     <form   className="SignIn" onSubmit={handleLogin}>

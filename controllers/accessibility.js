@@ -38,11 +38,68 @@ console.log(req.body)
       console.log(err);
     }
   },
-  login: (req, res) => {
-    
-   const  {username,password} = req.body
+  login: async(req, res) => {
 
-   console.log(req.body)
+    try{
+      const  {username,password} = req.body
+
+      const project = await user.findOne({ where: { email: username  } });
+      
+console.log(project)
+      
+      if(project !== null){
+
+
+        
+
+
+
+
+      jwt.sign(
+        { user: user },
+        "secretkey",
+        { expiresIn: "32s" },
+        (err, token) => {
+          res.cookie(token)
+  
+          res.json({
+            token: token,
+          });
+        }
+      );
+      console.log("el usuario EXISTE")
+
+    }
+    else {
+
+      console.log("el usuario  NO EXISTE")
+
+     
+    }
+
+
+    }
+    catch{
+
+      console.log("el usuario no existe, se tiene que registrar")
+
+
+    }
+
+
+
+   
+/* 
+    console.log(project)
+
+
+    
+   
+
+
+   
+   console.log(username)
+   console.log(password)
 
 
 
@@ -76,7 +133,9 @@ console.log(req.body)
     else {
 
       console.log("el usuario no existe, se tiene que registrar")
-    }
+
+    res.status(401).render("el usuario no existe, se tiene que registrar ")
+    } */
 
   
   },
@@ -97,3 +156,12 @@ console.log(req.body)
 };
 
 module.exports = routes;
+
+
+
+
+
+ 
+
+
+ 
