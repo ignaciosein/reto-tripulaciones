@@ -15,11 +15,7 @@ const SignUp = () => {
     };
 
     setRegister(obj);
-
-    console.log(e.target.name.value);
-    console.log(e.target.email.value);
-
-    console.log(e.target.password.value);
+ 
  
 
     let registerUser = await axios.post("/auth/createUser", obj);

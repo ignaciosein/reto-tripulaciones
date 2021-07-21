@@ -11,6 +11,29 @@ const routes = {
       console.log(err);
     }
   },
+  checkToken: async  (req,res) =>{
+
+      let token = req.body.token
+  
+    const base64Url = await token.split ('.') [1];
+   
+
+
+    let decoding = new Buffer(base64Url,  'base64');
+    let tokenDecoding = decoding.toString('ascii');
+
+    var decodedValue = JSON.parse(tokenDecoding)
+ 
+
+
+const response2 = await user.findOne({ where: { user_ID: decodedValue.user_ID  } });
+
+ console.log(response2.dataValues)
+
+ res.status(200).json(response2.dataValues);
+
+
+  },
   createUser: async (req, res) => {
     console.log(req.body);
 

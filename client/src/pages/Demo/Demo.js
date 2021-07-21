@@ -1,38 +1,31 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
+import axios from "axios";
 import "../Demo/Demo.css";
 
 const cookies = new Cookies();
 
 const Demo = () => {
-  useEffect(() => {
+
+  const [user, setUser] = useState([])
+
+ 
+  useEffect(async ()  => {
     let checkLogin = cookies.get("myCookie");
 
-if(checkLogin){
+    if (checkLogin) {
+      let obj = {
+        token: checkLogin,
+      };
 
-console.log(checkLogin)
+      let cookieToken = await axios.post("/auth/checkToken", obj);
 
+   
 
-}
-
-else{
-
-  window.location = "/signin"
-
-}
-
-
-
-
-
-
-
-  /*   checkLogin ? console.log("se ha logueado") : (window.location = "/signin"); */
-
-
-
-
-    
+      setUser(cookieToken.data)
+    } else {
+      window.location = "/signin";
+    }
   }, []);
 
   const Logout = () => {
@@ -41,10 +34,13 @@ else{
     window.location = "/signin";
   };
 
+
+ 
+
   return (
     <div className="Demo">
       <button onClick={Logout}>LogOut</button>
-      <h1>ESTA ES LA PANTALLA DEMO</h1>
+      <h1>Bienvenido {user.name}</h1>
     </div>
   );
 };
