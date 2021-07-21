@@ -1,6 +1,7 @@
 const { user } = require("../utils/database");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mySecret = process.env.SECRET
 
 const routes = {
   hello: (req, res) => {
@@ -11,8 +12,10 @@ const routes = {
     }
   },
   createUser: async (req, res) => {
-console.log(req.body)
+    console.log(req.body);
+
     const { name, email, password } = req.body;
+
     const hashedPassword = await bcrypt.hash(password, 11);
     const entry = { name: name, email: email, password: hashedPassword };
     console.log(entry);
@@ -38,106 +41,55 @@ console.log(req.body)
       console.log(err);
     }
   },
-  login: async(req, res) => {
+  login: async (req, res) => {
+    try {
+      const { username, password } = req.body;
 
-    try{
-      const  {username,password} = req.body
+      const project = await user.findOne({ where: { email: username } });
 
-      const project = await user.findOne({ where: { email: username  } });
-      
-console.log(project)
-      
-      if(project !== null){
+      console.log(project);
+      let user_ID = project.dataValues.user_ID;
+      let nameUser = project.dataValues.name;
 
+      let passUserDatabase = project.dataValues.password;
 
-        
+      const isMatch = await bcrypt.compare(password, passUserDatabase);
 
-
-
-
-      jwt.sign(
-        { user: user },
-        "secretkey",
-        { expiresIn: "32s" },
-        (err, token) => {
-          res.cookie(token)
-  
-          res.json({
-            token: token,
-          });
-        }
-      );
-      console.log("el usuario EXISTE")
-
-    }
-    else {
-
-      console.log("el usuario  NO EXISTE")
+      if (project !== null && isMatch) {
+        const payload = {
+          user_ID: user_ID,
+          name: nameUser,
+        };
 
      
+
+
+        jwt.sign(
+payload ,
+mySecret,
+
+          (err, token) => {
+            res.cookie(token);
+
+            res.json({
+              mensaje: "El usuario no existe",
+              status: "true",
+              token: token,
+            });
+          }
+        );
+        console.log("el usuario EXISTE");
+      } else {
+        console.log("el usuario  NO EXISTE");
+        res.json({
+          mensaje: "El usuario no existe",
+          status: "false",
+          token: "",
+        });
+      }
+    } catch {
+      console.log("el usuario no existe, se tiene que registrar");
     }
-
-
-    }
-    catch{
-
-      console.log("el usuario no existe, se tiene que registrar")
-
-
-    }
-
-
-
-   
-/* 
-    console.log(project)
-
-
-    
-   
-
-
-   
-   console.log(username)
-   console.log(password)
-
-
-
-    const user = {
-      id: 1,
-    email: "henry@email.com",
-      pass: "1234",
-    };
-
-
-
-    if(username === user.email && password === user.pass){
-
-      console.log("usuario existe")
-
-
-      jwt.sign(
-        { user: user },
-        "secretkey",
-        { expiresIn: "32s" },
-        (err, token) => {
-          res.cookie(token)
-  
-          res.json({
-            token: token,
-          });
-        }
-      );
-
-    }
-    else {
-
-      console.log("el usuario no existe, se tiene que registrar")
-
-    res.status(401).render("el usuario no existe, se tiene que registrar ")
-    } */
-
-  
   },
   posts: (req, res) => {
     jwt.verify(req.token, "secretkey", (error, authData) => {
@@ -156,12 +108,3 @@ console.log(project)
 };
 
 module.exports = routes;
-
-
-
-
-
- 
-
-
- 

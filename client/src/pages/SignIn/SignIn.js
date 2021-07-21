@@ -1,5 +1,5 @@
 import "./SignIn.scss";
-import Cookies from 'universal-cookie';
+import Cookies from "universal-cookie";
 
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -9,80 +9,48 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-
-
   const cookies = new Cookies();
 
   useEffect(() => {
-    
+    let checkingCookies = cookies.get("myCookie");
 
-    console.log(cookies.get("myCat"))
-    
-   
- 
-
-//leer las cookies
-//comprobar si hay cookies y token a que usuario peternece
-//haciendo peticion al bakc
-
-
-
-
-   
+    if (checkingCookies) {
+      window.location = "/demo";
+    } else if (checkingCookies === null) {
+      console.log("no hay token");
+    }
   }, []);
 
-  useEffect(() => {
-
-    if(user ==null){
-
-      alert("el usuario no existe")
-    }
-   
-  }, [user])
-
-
-
-  
-
-  console.log(username);
+ 
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
-    
       const response = await loginService.login({
         username,
         password,
       });
 
-      console.log(response)
-      
-      setUser(response);
-      setUsername("");
-      setPassword("");
+      if (response.status === "false") {
+        alert("el usuario no existe");
+      } else if (response.status === "true") {
+        setUser(response);
+        setUsername("");
+        setPassword("");
 
-      cookies.set('myCat',response.token)
-      alert("Se ha logueado correctamente")
+        cookies.set("myCookie", response.token);
+        alert("Se ha logueado correctamente");
 
-      window.location = "/demo"  
-
-    } catch (e) {
-
-
-
-
-    }
-
-   
+        window.location = "/demo";
+      }
+    } catch (e) {}
   };
 
-
-console.log(user)
  
 
   return (
-    <form   className="SignIn" onSubmit={handleLogin}>
+    <form className="SignIn" onSubmit={handleLogin}>
       <label htmlFor="email">
         Email:
         <input
