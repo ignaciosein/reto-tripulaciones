@@ -84,23 +84,12 @@ const Home = () => {
             </Marker>
           ))}
 
-          {/*  <Marker
-  latitude={40.4153275} 
-  longitude={-3.7087922}
-  offsetLeft={-20}
-  offsetTop={-30}
-
-  
- >
-<div><img className="marker" src="https://www.pngfind.com/pngs/m/326-3268483_location-logo-png-map-marker-alt-transparent-png.png"></img>
-</div>
-
- </Marker> */}
+ 
         </ReactMapGL>
       </section>
 
       <div id="resultado" className="popUp">
-        sdsda
+ 
       </div>
     </div>
   );
