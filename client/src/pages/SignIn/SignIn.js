@@ -85,9 +85,9 @@ const SignIn = () => {
 
     const cookies = new Cookies();
     let metercookie = await cookies.set("myCookie", cookieToken.data.token);
-
  
-    alert("Se ha logueado correctamente");
+ 
+    alert("Se ha logueado usted correctamente");
 
     window.location.reload();
   };
