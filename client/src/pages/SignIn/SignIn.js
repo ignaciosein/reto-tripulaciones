@@ -47,8 +47,33 @@ const SignIn = () => {
     } catch (e) {}
   };
 
-  const responseGoogle = (respuesta) => {
-    console.log(respuesta);
+  const responseGoogle = async (respuesta) => {
+
+
+    
+
+/*     cookies.set("myCookie", response.token); */
+
+    let googleLogin = {
+      name: respuesta.profileObj.name,
+      email: respuesta.profileObj.email,
+      password: respuesta.profileObj.googleId
+
+
+    }
+
+
+    let cookieToken = await axios.post("/auth/googleLogin", googleLogin);
+  
+
+    console.log(cookieToken.data.token)
+
+    cookies.set("myCookie", cookieToken.data.token);
+    alert("Se ha logueado correctamente");
+
+    window.location = "/demo";
+
+   
   };
   const responseFacebook = (respuesta) => {
     console.log(respuesta);
