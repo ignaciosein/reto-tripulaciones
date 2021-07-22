@@ -14,15 +14,13 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-
-
   useEffect(() => {
     let checkingCookies = cookies.get("myCookie");
 
     if (checkingCookies) {
       window.location = "/demo";
     } else if (checkingCookies === null) {
-      console.log("no hay token");
+     
     }
   }, []);
 
@@ -35,7 +33,6 @@ const SignIn = () => {
         password,
       });
 
-
       if (response.status === "false") {
         alert("el usuario no existe");
       } else if (response.status === "true") {
@@ -45,48 +42,37 @@ const SignIn = () => {
 
         let prueba = cookies.set("myCookie", response.token);
 
-        console.log(prueba)
-        
+ 
+
         alert("Se ha logueado correctamente");
 
         window.location = "/demo";
       }
     } catch (e) {
-
       alert("el usuario no existe");
-
     }
   };
 
   const responseGoogle = async (respuesta) => {
+    try {
+      let googleLogin = {
+        name: respuesta.profileObj.name,
+        email: respuesta.profileObj.email,
+        password: respuesta.profileObj.googleId,
+      };
 
-    try{
-    let googleLogin = {
-      name: respuesta.profileObj.name,
-      email: respuesta.profileObj.email,
-      password: respuesta.profileObj.googleId,
-    };
+      let cookieToken = await axios.post("/auth/googleLogin", googleLogin);
 
-    let cookieToken = await axios.post("/auth/googleLogin", googleLogin);
+ 
+      const cookies = new Cookies();
+      let metercookie = await cookies.set("myCookie", cookieToken.data.token);
+ 
+      alert("Se ha logueado correctamente");
 
-      
-    console.log(cookieToken.data.token)
-    const cookies = new Cookies();
-    let metercookie = await cookies.set("myCookie", cookieToken.data.token);
-    console.log(metercookie)
-    alert("Se ha logueado correctamente"+cookieToken.data.token);
-
-   window.location.reload();   
-  }
-  catch{
-
-
-
-  }
+      window.location.reload();
+    } catch {}
   };
   const responseFacebook = async (respuesta) => {
-
-     
     let FacebookLogin = {
       name: respuesta.name,
       email: respuesta.email,
@@ -95,26 +81,21 @@ const SignIn = () => {
 
     let cookieToken = await axios.post("/auth/facebookLogin", FacebookLogin);
 
-    console.log(cookieToken)
-    
+ 
+
     const cookies = new Cookies();
-   let metercookie = await cookies.set("myCookie", cookieToken.data.token);
-    
-   console.log(metercookie)
+    let metercookie = await cookies.set("myCookie", cookieToken.data.token);
+
+ 
     alert("Se ha logueado correctamente");
 
-    window.location.reload();  
-
- 
- 
-
-
+    window.location.reload();
   };
   const componentClicked = () => {};
   const googleLogin = () => {
     return (
       <GoogleLogin
-        clientId="542913183117-959bmc4aiescf3jep1gtt3s7ahjis46v.apps.googleusercontent.com"
+        clientId={process.env.REACT_APP_GG_API}
         buttonText="Login"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
@@ -125,7 +106,7 @@ const SignIn = () => {
   const facebookLogin = () => {
     return (
       <FacebookLogin
-        appId="560421605128839"
+        appId={process.env.REACT_APP_FB_API}
         autoLoad={false}
         fields="name,email,picture"
         onClick={componentClicked}
@@ -138,7 +119,7 @@ const SignIn = () => {
 
   return (
     <form className="SignIn" onSubmit={handleLogin}>
-      <label htmlFor="email"  >
+      <label htmlFor="email">
         Email:
         <input
           type="text"
